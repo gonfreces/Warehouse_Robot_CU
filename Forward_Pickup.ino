@@ -36,14 +36,14 @@ const int AIN3 = 7;           //control pin 1 on the motor driver for the front 
 const int AIN4 = 5;           //control pin 2 on the motor driver for the right motor
 const int PWMB = 6;           //speed control pin on the motor driver for the right motor
 
-const int motorSpeed1 = 255;//125-50;
-const int motorSpeed2 = 255;//100-50;
+const int motorSpeed1 = 120;//125-50;
+const int motorSpeed2 = 120;//100-50;
 
-int sv1 = 600;
-int sv2 = 600;
+int sv1;
+int sv2;
 
-int s1 = A5;
-int s2 = A4;
+int s1 = A2;
+int s2 = A1;
 
 int ti = 10;
 const int dirPin = 10;   //stepper motor direction 
@@ -74,23 +74,14 @@ void setup()
 }
 
 void loop() 
-{
-  sv1 = analogRead(s1);
-  sv2 = analogRead(s2);
-  //callStepperdown();
-  
-  //digitalWrite(AIN1, HIGH);           //clockwise Front Right              
-  //digitalWrite(AIN2, LOW);
- // analogWrite(PWMA, abs(motorSpeed1));       
-
-  //digitalWrite(AIN3, HIGH);           //clockwise Front Left              
-  //digitalWrite(AIN4, LOW);
- // analogWrite(PWMB, abs(motorSpeed2));
- // Serial.print ("\r\n Entire time: ");
-//  if (Serial.available() > 0) { ti = Serial.read(); }
- // Serial.print("Motors runnig for ");
- // Serial.println(ti);   
-  delay(100);
+{   
+    delay(1000);
+    Serial.println(number);
+  // calllinefollower();
+  if(number == '4') 
+  { 
+  Serial.println("in void loop");calllinefollower(); }
+  //delay(100);
 } // end loop
 
 // callback for received data
@@ -105,8 +96,15 @@ void receiveData(int byteCount)
   //number = '\0';
 
   //inpu+t code for now
-  if(number == '4') 
-  { calllinefollower(); }
+  //if(number == '4') 
+  //{ 
+ // Serial.println("in 1");
+  //if(number == '4')
+  //{
+  //  Serial.println(number);
+  //  calllinefollower(); 
+  //  Serial.println("in 2");
+ // }//}
   
   if(number == '3') 
   {  callStepperup(); }
@@ -188,22 +186,26 @@ void calllinefollower()
 {
   Serial.println("\nLine Follower");
   int k=0;
-  sv1 = analogRead(s1);
-  sv2 = analogRead(s2);
-  if ((sv1<600) && (sv2>600))
+  sv1 = analogRead(s1);//right less than 600 = on yellow
+  sv2 = analogRead(s2);//left
+ 
+    if ((sv1<600) && (sv2>600))
   {
     Serial.println("\nFirst loop");
     k=1;
     sv1 = analogRead(s1);
     sv2 = analogRead(s2);
     
-    digitalWrite(AIN1, LOW);           //clockwise Front Right              
-    digitalWrite(AIN2, HIGH);
-    analogWrite(PWMA, abs(motorSpeed1));       
+    Serial.println(sv1);
+    Serial.println(sv2);
+    
+    digitalWrite(AIN1, HIGH);           //clockwise Front Right              
+    digitalWrite(AIN2, LOW);
+    analogWrite(PWMA, abs(motorSpeed1-50)); //right      
 
-    digitalWrite(AIN3, HIGH);           //clockwise Front Left              
-    digitalWrite(AIN4, LOW);
-    analogWrite(PWMB, abs(motorSpeed2));
+    digitalWrite(AIN3, LOW);           //clockwise Front Left              
+    digitalWrite(AIN4, HIGH);
+    analogWrite(PWMB, abs(motorSpeed2-motorSpeed2)); //left
     
     Serial.print("\n");
     Serial.print(k);
@@ -215,14 +217,15 @@ void calllinefollower()
     Serial.println("\nSecond Loop");
     //sv1 = analogRead(s1);
     //sv2 = analogRead(s2);
-    
-    digitalWrite(AIN1, LOW);           //clockwise Front Right              
-    digitalWrite(AIN2, HIGH);
-    analogWrite(PWMA, abs(motorSpeed1));       
+    Serial.println(sv1);
+    Serial.println(sv2);
+    digitalWrite(AIN1, HIGH);           //clockwise Front Right              
+    digitalWrite(AIN2, LOW);
+    analogWrite(PWMA, abs(motorSpeed1-motorSpeed1));       
 
-    digitalWrite(AIN3, HIGH);           //clockwise Front Left              
-    digitalWrite(AIN4, LOW);
-    analogWrite(PWMB, abs(motorSpeed2));
+    digitalWrite(AIN3, LOW);           //clockwise Front Left              
+    digitalWrite(AIN4, HIGH);
+    analogWrite(PWMB, abs(motorSpeed2-50));
     
     Serial.print("\n");
     Serial.print(k);
@@ -234,18 +237,20 @@ void calllinefollower()
     Serial.println("\nThird Loop");
     sv1 = analogRead(s1);
     sv2 = analogRead(s2);
-
-    analogWrite(PWMA, abs(0));
-    analogWrite(PWMB, abs(0));
+    Serial.println(sv1);
+    Serial.println(sv2);
     
-    delay(1000);
+    //analogWrite(PWMA, abs(0));
+    //analogWrite(PWMB, abs(0));
     
-    digitalWrite(AIN1, LOW);           //clockwise Front Right              
-    digitalWrite(AIN2, HIGH);
+    //delay(1000);
+    
+    digitalWrite(AIN1, HIGH);           //clockwise Front Right              
+    digitalWrite(AIN2, LOW);
     analogWrite(PWMA, abs(motorSpeed1));       
 
-    digitalWrite(AIN3, HIGH);           //clockwise Front Left              
-    digitalWrite(AIN4, LOW);
+    digitalWrite(AIN3, LOW);           //clockwise Front Left              
+    digitalWrite(AIN4, HIGH);
     analogWrite(PWMB, abs(motorSpeed2));
     
     Serial.print("\n");
@@ -257,6 +262,8 @@ void calllinefollower()
      Serial.println("\nFourth Loop");
      sv1 = analogRead(s1);
      sv2 = analogRead(s2);
+     Serial.println(sv1);
+     Serial.println(sv2);
     
      digitalWrite(AIN1, LOW);           //clockwise Front Right              
      digitalWrite(AIN2, HIGH);
