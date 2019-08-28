@@ -109,22 +109,4 @@ void loop()
 
 }
 
-void spinMotor(int motorSpeed)                       //function for driving the right motor
-{
-  if (motorSpeed > 0)                                 //if the motor should drive forward (positive speed)
-  {
-    digitalWrite(AIN1, HIGH);                         //set pin 1 to high
-    digitalWrite(AIN2, LOW);                          //set pin 2 to low
-  }
-  else if (motorSpeed < 0)                            //if the motor should drive backwar (negative speed)
-  {
-    digitalWrite(AIN1, LOW);                          //set pin 1 to low
-    digitalWrite(AIN2, HIGH);                         //set pin 2 to high
-  }
-  else                                                //if the motor should stop
-  {
-    digitalWrite(AIN1, LOW);                          //set pin 1 to low
-    digitalWrite(AIN2, LOW);                          //set pin 2 to low
-  }
-  analogWrite(PWMA, abs(motorSpeed));                 //now that the motor direction is set, drive it at the entered speed
-}
+
