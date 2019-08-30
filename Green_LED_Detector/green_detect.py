@@ -8,70 +8,79 @@ Player: Raspbery Pi Camera
 * Using a RPi camera to detect and send a signal that swicthes the button on
 
 """
-
-from __future__ import print_function
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import cv2
-import numpy as np
-from difflib import SequenceMatcher
-import sys
-import time 
 import RPi.GPIO as GPIO
 import time
+from gd1 import gd2
+# Pin Definitons:
+#pwmPin = 18 # Broadcom pin 18 (P1 pin 12)
+led = [18,20,21,23,25,26,27]
+b = 4 # button pin
+k = 0  #counter to check if green led goes high or not
+dc = 100 # duty cycle (0-100) for PWM pin
+c = 0 #counter of button
+a = 0
+e = 0 #win counter 
 
-#def gd2();
-b = 4
 # Pin Setup:
 GPIO.setmode(GPIO.BCM) # Broadcom pin-numbering scheme
 GPIO.setup(b,GPIO.OUT)
+for i in range(0,7):
+    GPIO.setup(led[i], GPIO.OUT) # LED pin set as output
 
-
-camera = PiCamera()
-camera.resolution = (400, 300)
-camera.framerate = 15
-camera.start_preview()
-time.sleep(2)
-rawCapture = PiRGBArray(camera, size=(400, 300))
-    
-# allow the camera to warmup
-time.sleep(0.1)
-
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-            # grab the raw NumPy array representing the image, then initialize the timestamp
-            # and occupied/unoccupied text
-    try:      
-            cap = frame.array
-     
-            # show the frame
-            cv2.imshow("Frame", cap)
-            key = cv2.waitKey(5) & 0xFF
-            #cv2.line(cap, (0,0),(400,300),(255,0,0),15)
-            #cv2.imshow("f2", cap)
-            # clear the stream in preparation for the next frame
-            
-            #detect green
-            hsv = cv2.cvtColor(cap, cv2.COLOR_BGR2HSV) #image array convert to hsv
-            
-            #create a mask for only green colored sections to show
-            mask = cv2.inRange(hsv, (50,150,200),(70,255,255))
-            
-            #slice the green part
-            imask = mask>0
-            green = np.zeros_like(cap, np.uint8) #make others black
-            green[imask] = cap[imask] # pass coordinates but doubt
-            cv2.imshow("f2", green)
-            if mask.any()>0:
-                print("Found")
-                GPIO.output(b, GPIO.HIGH)
-            rawCapture.truncate(0)
-            
-            # if the `q` key was pressed, break from the loop
-            if key == 27:
-                    break
-    except KeyboardInterrupt:
-            raise
+print("Here we go! Press CTRL+C to exit")
+try:
+    while True:
+        #if k == 1:
+                #time.sleep(0.5)
+        g = gd2()
+        print("g",g)
         
+        for i in range(0,7):
+            if GPIO.input(b) == 1:
+                c = c+1
+            if c >= 2:
+                c = 0
+            if i == 3:
+                pwm = GPIO.PWM(led[i],50)
+                pwm.start(100)
+                GPIO.output(led[i], GPIO.HIGH)
+                if GPIO.input(b) == 1:
+                    if c==1:
+                        k=1
+                        c=0
+                        GPIO.output(led[i], GPIO.HIGH)
+                        time.sleep(3)
+                        GPIO.output(led[i], GPIO.LOW)
+                    else:
+                       print('please remove your hand')
+                       time.sleep(5)
+                #time.sleep(0.5)
+                GPIO.output(led[i], GPIO.LOW)
+                pwm.stop()
+            pwm = GPIO.PWM(led[i],50)
+            pwm.start(dc)
+            GPIO.output(led[i], GPIO.HIGH)
+            time.sleep(0.5)
+            GPIO.output(led[i], GPIO.LOW)
+            pwm.stop()
+            print('Button',GPIO.input(b))
+            print('Iteration',i)
+            print('Counter',c)
+            print('win counter',e)
+            #if i==3 :
+                    #print('WIN!!!')
+                    #c = c+1
+                    #time.sleep(0.1)
+            if k == 1:
+                print('win! =',e)
+                #time.sleep(3)
+                GPIO.output(led[3],GPIO.HIGH)
+                time.sleep(2)
+                GPIO.output(led[3],GPIO.LOW)
+                k = 0
+                e = e+1
+                
 
-cv2.destroyAllWindows()
- 
+except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
+    #pwm.stop() # stop PWM
+    GPIO.cleanup() # cleanup all GPIO
