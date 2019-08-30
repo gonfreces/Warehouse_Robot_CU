@@ -7,7 +7,7 @@ Game: StopIt!
 """
 import RPi.GPIO as GPIO
 import time
-from gd1 import gd2
+#from gd1 import gd2
 # Pin Definitons:
 #pwmPin = 18 # Broadcom pin 18 (P1 pin 12)
 led = [18,20,21,23,25,26,27]
@@ -32,8 +32,8 @@ try:
     while True:
         #if k == 1:
                 #time.sleep(0.5)
-        g = gd2()
-        print("g",g)
+        #g = gd2()
+        #print("g",g)
         
         for i in range(0,7):
             if GPIO.input(b) == 1:
@@ -79,7 +79,7 @@ try:
                 GPIO.output(led[3],GPIO.LOW)
                 k = 0
                 e = e+1
-                
+                GPIO.output(b, GPIO.LOW)
 
 except KeyboardInterrupt: # If CTRL+C is pressed, exit cleanly:
     #pwm.stop() # stop PWM
