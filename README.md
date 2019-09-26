@@ -1,10 +1,9 @@
 # Warehouse_Robot_CU
 
 <p align="justify">
-This code written in python is for the course taught by Prof. Derek Raemon at University of Colorado Boulder MCEN 5115 Mechantronics and Roboics course S18. THe objective of the course was to build an autonomous robot that can self-navigate itself in a scaled-down version of an automated warehouse following the lane (within yellow lines), stoping at points in front of the particular rack and making sure that the robot is able to pick up the pallet from one location and dropping to its required destination while following all the constraints. 
+This contains codes for the robot built in the MCEN 5115 Mechatronics & Robotics course taught by Prof. Derek Raemon at University of Colorado Boulder. The objective of the course is to build an autonomous robot that can self-navigate itself in a scaled-down version of an automated warehouse to pick up the pallet and dropping to its required destination while following the constrained space. 
 
-To perform all these functions, our robot had a drive system to let it move around the city, a vision system to recognize QR codes and navigate through the warehouse, and a pallet picking system to pick up pallets and hold them till its drop-off location.
-
+To perform all these functions, our robot had a drive system to let it move around the warehouse, a vision system to recognize QR codes and navigate through the warehouse, and a pallet picking system to pick up pallets and hold them till its drop-off location.
 
 Hardware: 
 1) Raspberry Pi for navigation (by getting coordinates from the Pi-cameras via QR code) and 
