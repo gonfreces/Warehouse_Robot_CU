@@ -1,0 +1,25 @@
+import RPi.GPIO as GPIO
+import time
+
+class servo():
+    def __init__(self, inp):
+        self.inp = inp
+
+    def serv(self):
+        svp =  16 #servo GPIO input pin
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(svp, GPIO.OUT)
+
+        p = GPIO.PWM(svp, 50)
+        p.start(0)
+
+        if (self.inp  == "home"):
+            p.ChangeDutyCycle(6)
+            time.sleep(1)
+        elif (self.inp  == "right"):
+            p.ChangeDutyCycle(2.3)
+            time.sleep(1)
+        elif (self.inp == "left"):
+            p.ChangeDutyCycle(11.5)
+            time.sleep(1)
+        GPIO.cleanup()
